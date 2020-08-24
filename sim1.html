@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Tests simdev</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="Stylesheet" media="screen" href="testsuite.css"/>
+    <link rel="Stylesheet" media="screen" href="sim.css"/>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="simdev.js"></script>
+    <script type="text/javascript" src="sim1.js"></script>
+  </head>
+
+  <body>
+    <div id="simulation">
+    <h1>Sample Simulation</h1>
+    <hr>
+    <div id="controls">
+      <button id="start">start</button>
+      <button id="clear">clear</button>
+      <button id="play">play</button>
+      <button id="stop">stop</button>
+      <button id="ffwd">&gt;&gt;</button>
+      States: <input id="states" value="analysis,development,testing"></input>
+    </div>
+    <div class="metrics">
+      Time: <span id="time">0</span>, # Input: <span id="numInputs">0</span>, Total Input: <span id="totalInputs">0</span>, Total WIP: <span id="wipTotal">0</span>
+    </div>
+	
+    <div id="body">
+      <div id="input">Input:
+	<div class="out"></div>
+      </div>
+      <div id="output" class="workplace">
+	<h3>Output</h3>
+	<div class="metrics">
+	  Total:<span id="outputTotal">0</span>, Throughput: <span id="outputThroughput">0</span>
+	</div>
+	<div class="in"></div>
+      </div>
+      <div id="parking"></div>
+    </div>
+    </div>
+  </body>
+</html>

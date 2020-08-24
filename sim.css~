@@ -1,0 +1,69 @@
+.item {
+    border: thin solid black;
+    padding: 2px;
+    margin: 2px;
+    background: white;
+    width:25px;
+    display:block;
+    overflow: hidden;
+    float: left;
+    font-size:70%;
+}
+
+.large {
+    background: orange;
+    }
+
+.small {
+    background: lightgreen;
+    }
+
+#parking {
+    background: yellow;
+    margin: 5px;
+    padding: 5px;
+    }
+
+div.in {
+    display:inline;
+    float:left;
+    height: 150px;
+    width: 110px;
+    background: lightblue;
+    margin: 5px;
+    padding: 5px;
+    overflow: hidden;
+    }
+
+div.out {
+    display:none;
+    position: relative;
+    top: -60px;
+    left: 65px;
+    height: 15px;
+    width: 200px;
+    background: orange;
+    margin: 5px;
+    padding: 5px;
+    }
+
+
+div.wip {
+    display:inline;
+    float:left;
+    height: 150px;
+    width: 110px;
+    background: red;
+    margin: 5px;
+    padding: 5px;
+    overflow: hidden;
+    }
+
+#input,#parking {
+    display: none;    
+    }
+
+#analysis,#development,#testing {
+    display:inline;
+    float:left;
+    }

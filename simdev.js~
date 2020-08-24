@@ -1,0 +1,124 @@
+
+/**
+ * @fileoverview
+ * Javascript main code.
+ */
+var simdev  = simdev || {};
+
+/**
+ * @return a float value between -1 and 1 from a uniform distribution
+ */
+simdev.rand = function() {
+  return ( Math.random() - 0.5) * 2;
+};
+
+simdev.id = 1;
+
+simdev.WorkItem = function(estimation) {
+  this.estimation = estimation || 1;
+  this.completion = 0;
+  this.id = simdev.id++;
+};
+
+simdev.WorkItem.prototype = {
+
+  realSize: function(deviation) {
+    return (this.estimation   - this.completion) * (1 + (simdev.rand() * deviation));
+  },
+
+  toString: function() {
+    return "W" + this.id + ", E: "+ this.estimation + ", C: " + this.completion;
+  }
+
+};
+
+simdev.WorkPlace = function(capacity,deviation,slots) {
+  this.capacity = capacity || 1;
+  this.deviation = deviation || 0;
+  this.wip = [];
+  this.slots = slots || 1;
+}
+
+
+simdev.WorkPlace.prototype = {
+
+  workOn: function(workItem) {
+    this.wip.unshift(workItem);
+    return this;
+  },
+
+  work: function() {
+    var len = this.wip.length;
+    var itemCapacity = this.capacity / len;
+    var notCompleted = [];
+    for(var i = 0; i < len; i++) {
+      var item = this.wip.shift();
+      var size = item.realSize(this.deviation);
+      if(itemCapacity >= size) {
+	item.completed = true;
+	this.outputQueue && this.outputQueue.unshift(item);
+      } else {
+	item.completion += itemCapacity;
+	notCompleted.unshift(item);
+      }
+    }
+    this.wip = notCompleted;
+    return this;
+  },
+
+  schedule: function() {
+    while(this.wip.length < this.slots) {
+      var item = this.inputQueue && this.inputQueue.shift();
+      if(item)
+	this.wip.push(item);
+      else
+	return;
+    }
+  }
+};
+
+simdev.Simulation = function() {
+  this.places= [];
+  this.inputRate = 1;
+  this.meanSize = 1;
+  this.transition = [[1]];
+};
+
+simdev.Simulation.prototype = {
+
+  add: function(place) {
+    this.places.unshift(place);
+    var i = 0;
+    for(;i < this.transition.length;i++) {
+      this.transition[i].unshift(1);
+    }
+    this.transition[i] = [];
+    for(var j = 0;j < this.places.length+1;j++) {
+      this.transition[i][j] = 1;
+    }
+    return this;
+  },
+
+  newInputs: function() {
+    var numInputs = (simdev.rand() * this.inputRate) + this.inputRate;
+    var inputs = [];
+    for(var i = 0;i<numInputs;i++)
+      inputs.push(new simdev.WorkItem((simdev.rand() * this.meanSize) + this.meanSize));
+    return inputs;
+  },
+
+  probability: function(from, to) {
+    var me = this;
+    function toInput() {
+      return to == 0;
+    }
+
+    function fromOutput() {
+      return from == me.places.length + 1;
+    }
+
+    if(toInput() || fromOutput())
+      return 0;
+    return this.transition[from][to-1];
+  }
+};

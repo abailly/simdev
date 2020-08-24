@@ -1,0 +1,111 @@
+.item {
+    border: thin solid black;
+    padding: 2px;
+    margin: 2px;
+    background: white;
+    width:25px;
+    display:block;
+    overflow: hidden;
+    float: left;
+    font-size:70%;
+}
+
+h2 {
+    font-size: 110%;
+}
+
+.large {
+    background: orange;
+    }
+
+.small {
+    background: lightgreen;
+    }
+
+#parking {
+    background: yellow;
+    margin: 5px;
+    padding: 5px;
+    }
+
+div.in {
+    display:inline;
+    float:left;
+    height: 150px;
+    width: 110px;
+    background: lightblue;
+    margin: 5px;
+    padding: 5px;
+    overflow: hidden;
+    }
+
+div.out {
+    display:none;
+    position: relative;
+    top: -60px;
+    left: 65px;
+    height: 15px;
+    width: 200px;
+    background: orange;
+    margin: 5px;
+    padding: 5px;
+    }
+
+
+div.wip {
+    display:inline;
+    float:left;
+    height: 150px;
+    width: 110px;
+    background: red;
+    margin: 5px;
+    padding: 5px;
+    overflow: hidden;
+    }
+
+#input,#parking {
+    display: none;    
+    }
+
+.workplace {
+    display:inline;
+    float:left;
+    }
+
+.slack,.contention,.capacity,.deviation,.slots {
+    font-style: italic;
+    font-size: 90%;
+    padding: 0 0.2em 0 0.2em;
+}
+
+.metrics,.params {
+    background: #eef;
+    border: 0.1px solid black;
+    padding:.1em;
+    margin: .3em;
+}
+
+
+span.slack:before {
+    content: "Slack: ";  
+}
+
+span.contention:before {
+    content: "Contention: ";  
+}
+
+span.capacity:before {
+    content: "Cap.: ";  
+}
+
+span.deviation:before {
+    content: "Dev.: ";  
+}
+span.slots:before {
+    content: "Slots: ";  
+}
+
+.controls {
+    display: inline;
+    width: 1em;
+}

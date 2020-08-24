@@ -1,0 +1,151 @@
+/*
+ * Copyright (C) 2009 - OQube / Arnaud Bailly
+ * This software is provided ASIS without any waranty. Use at your
+ * own risk.
+ *
+ * Created on Wed Aug 19 2009
+ */
+
+
+/**
+ * @fileoverview Sample simulation for 3-step development process.
+ *
+ * @author abailly@oqube.com
+ * @version $Id$
+ */
+
+var sim1 = new simdev.Simulation();
+sim1.meanSize  = 5;
+sim1.inputRate = 1;
+
+var analysis,development,testing;
+
+analysis = new simdev.WorkPlace(10,1,2);
+development = new simdev.WorkPlace(10,3,2);
+testing = new simdev.WorkPlace(5,1,2);
+
+sim1.add(analysis,"analysis");
+sim1.add(development,"development");
+sim1.add(testing,"testing");
+
+sim1.transition("input",1,"analysis");
+sim1.transition("analysis",1,"development");
+sim1.transition("development",3,"testing");
+sim1.transition("development",1,"analysis");
+sim1.transition("testing",8,"output");
+sim1.transition("testing",2,"development");
+sim1.transition("testing",1,"analysis");
+
+function Queue(sel) {
+  this.queue = [];
+  this.selector = sel;
+  this.length = 0;
+  this.total = 0;
+};
+
+
+Queue.prototype = {
+
+  shift : function() {
+    var item = this.queue.shift();
+    if(item) {
+      var elem = $("#W"+item.id);
+      $(this.selector).remove("#W"+item.id);
+      $("#parking").append(elem);
+      this.length--;
+      this.total -= item.estimation;
+    }
+    return item;
+  },
+
+  unshift: function(item) {
+    var span = $("#W"+item.id);
+    span.parent().remove("#W"+item.id);
+    $(this.selector).append(span);
+    this.queue.unshift(item);
+    this.length++;
+    this.total += item.estimation;
+  }
+
+};
+
+var states = ["input","analysis","development","testing","output"];
+
+$.each(states,
+       function(i,item) {
+	 sim1[item].place.inputQueue  = new Queue("#"+item+" div.in");
+	 sim1[item].place.wip         = new Queue("#"+item+" div.wip");
+	 sim1[item].place.outputQueue = new Queue("#"+item+" div.out");
+       });
+
+function createItems() {
+    var ins = sim1.newInputs();
+    $.each(ins,
+	   function(i,item) {
+	     var lbl = "W"+item.id;
+	     var div = $("<span></span>").attr("id",lbl).html(lbl).addClass("item");
+	     if(item.estimation < sim1.meanSize *2/3)
+	       div.addClass("small");
+	     else if (item.estimation > sim1.meanSize * 4/3)
+	       div.addClass("large");
+	     div.attr("style", "width: "+item.estimation * 3+"px");
+	     sim1.input.place.outputQueue.unshift(item);
+	     $("div#input div.out").append(div);
+	   });
+    step = dispatchQueues;
+  };
+
+function dispatchAll() {
+      $.each(["input","analysis","development","testing"],
+	   function(i,item){
+	     sim1.dispatch(item);
+	  });
+}
+
+function dispatchQueues() {
+  dispatchAll();
+  step = schedule;
+};
+
+function schedule() {
+  $.each(["analysis","development","testing"],
+	 function(i,item){
+	   sim1[item].place.schedule();
+	 });
+  step = work;
+};
+
+function work() {
+  $.each(["analysis","development","testing"],
+	 function(i,item){
+	   sim1[item].place.work();
+	  });
+  step = createItems;
+  sim1.time++;
+};
+
+function updateData() {
+  $("#time").html(sim1.time);
+  $("#outputTotal").html(sim1.output.place.outputQueue.total);
+  $("#outputThroughput").html(sim1.output.place.outputQueue.total / sim1.time);
+};
+
+var step = createItems;
+
+function dostep() {
+  step();
+};
+
+function ffwd() {
+  step();
+  step();
+  step();
+  step();
+  dispatchAll();
+  updateData();
+};
+
+$(function() {
+    $("#step").click(dostep);
+    $("#ffwd").click(ffwd);
+  });
